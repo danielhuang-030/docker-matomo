@@ -23,6 +23,7 @@ docker-compose logs -f
 
 ### Config
 ```shell
+./dockerize/db.env
 ./dockerize/config/matomo/config.ini.php
 ```
 
@@ -31,7 +32,7 @@ docker-compose logs -f
 |---|---|---|---|
 | matomo  | - | 60080 | [matomo](http://localhost:60080) | 
 | matomo-db | 3306, 33060 | 60006 | MariaDB |
-| matomo-pma | 80 | 60010 | [phpMyAdmin](http://localhost:12010) |
+| matomo-pma | 80 | 60010 | [phpMyAdmin](http://localhost:60010) |
 
 ### Password
 | Service  | Username | Password  | 
