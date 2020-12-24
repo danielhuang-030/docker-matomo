@@ -1,0 +1,61 @@
+version: '3'
+
+networks:
+    matomo-network:
+        driver: bridge
+
+services:
+    #matomo-db
+    matomo-db:
+        image: mariadb
+        container_name: matomo-db
+        command: --max-allowed-packet=64MB
+        restart: always
+        ports:
+            - "60006:3306"
+        volumes:
+            - ./dockerize/data/mariadb:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - TZ=Asia/Taipei
+        env_file:
+            - ./dockerize/db.env
+        networks:
+            - matomo-network
+
+    #matomo
+    matomo:
+        image: matomo
+        container_name: matomo
+        restart: always
+        volumes:
+            - ./dockerize/config/matomo:/var/www/html/config
+            - ./dockerize/logs/matomo:/var/www/html/logs
+            - ./matomo:/var/www/html
+        environment:
+            - MATOMO_DATABASE_HOST=matomo-db
+        env_file:
+            - ./dockerize/db.env
+        ports:
+            - 60080:80
+        networks:
+            - matomo-network
+        depends_on:
+            - matomo-db
+            
+    #phpMyAdmin
+    pma:
+        image: phpmyadmin/phpmyadmin:latest
+        container_name: matomo-pma
+        restart: always
+        volumes:
+            - ./dockerize/config/phpMyAdmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+        ports:
+            - "60010:80"
+        environment:
+            SESSION_TIMEOUT: 86400
+            PMA_HOST: matomo-db
+        networks:
+            - matomo-network
+        depends_on:
+            - matomo-db

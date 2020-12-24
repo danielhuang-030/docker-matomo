@@ -1,0 +1,4 @@
+# Ignore folders
+config/matomo/*
+data/mariadb/*
+logs/matomo/*
